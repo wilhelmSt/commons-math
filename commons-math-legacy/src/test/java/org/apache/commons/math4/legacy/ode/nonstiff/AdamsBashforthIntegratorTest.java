@@ -106,40 +106,6 @@ public class AdamsBashforthIntegratorTest {
     }
 
     @Test(expected = MaxCountExceededException.class)
-    public void exceedMaxEvaluations() throws DimensionMismatchException, NumberIsTooSmallException, MaxCountExceededException, NoBracketingException {
-
-        TestProblem1 pb  = new TestProblem1();
-        double range = pb.getFinalTime() - pb.getInitialTime();
-
-        AdamsBashforthIntegrator integ = new AdamsBashforthIntegrator(2, 0, range, 1.0e-12, 1.0e-12);
-        TestProblemHandler handler = new TestProblemHandler(pb, integ);
-        integ.addStepHandler(handler);
-        integ.setMaxEvaluations(650);
-        integ.integrate(pb,
-                        pb.getInitialTime(), pb.getInitialState(),
-                        pb.getFinalTime(), new double[pb.getDimension()]);
-    }
-
-    @Test
-    public void backward() throws DimensionMismatchException, NumberIsTooSmallException, MaxCountExceededException, NoBracketingException {
-
-        TestProblem5 pb = new TestProblem5();
-        double range = JdkMath.abs(pb.getFinalTime() - pb.getInitialTime());
-
-        AdamsBashforthIntegrator integ = new AdamsBashforthIntegrator(4, 0, range, 1.0e-12, 1.0e-12);
-        integ.setStarterIntegrator(new PerfectStarter(pb, (integ.getNSteps() + 5) / 2));
-        TestProblemHandler handler = new TestProblemHandler(pb, integ);
-        integ.addStepHandler(handler);
-        integ.integrate(pb, pb.getInitialTime(), pb.getInitialState(),
-                        pb.getFinalTime(), new double[pb.getDimension()]);
-
-        Assert.assertEquals(0.0, handler.getLastError(), 4.3e-8);
-        Assert.assertEquals(0.0, handler.getMaximalValueError(), 4.3e-8);
-        Assert.assertEquals(0, handler.getMaximalTimeError(), 1.0e-16);
-        Assert.assertEquals("Adams-Bashforth", integ.getName());
-    }
-
-    @Test
     public void polynomial() throws DimensionMismatchException, NumberIsTooSmallException, MaxCountExceededException, NoBracketingException {
         TestProblem6 pb = new TestProblem6();
         double range = JdkMath.abs(pb.getFinalTime() - pb.getInitialTime());
@@ -158,6 +124,34 @@ public class AdamsBashforthIntegratorTest {
                 Assert.assertTrue(handler.getMaximalValueError() < 5.0e-10);
             }
         }
+
+
+        TestProblem5 pb2 = new TestProblem5();
+        double range2 = JdkMath.abs(pb2.getFinalTime() - pb2.getInitialTime());
+
+        AdamsBashforthIntegrator integ2 = new AdamsBashforthIntegrator(4, 0, range2, 1.0e-12, 1.0e-12);
+        integ2.setStarterIntegrator(new PerfectStarter(pb2, (integ2.getNSteps() + 5) / 2));
+        TestProblemHandler handler2 = new TestProblemHandler(pb2, integ2);
+        integ2.addStepHandler(handler2);
+        integ2.integrate(pb2, pb2.getInitialTime(), pb2.getInitialState(),
+                        pb2.getFinalTime(), new double[pb2.getDimension()]);
+
+        Assert.assertEquals(0.0, handler2.getLastError(), 4.3e-8);
+        Assert.assertEquals(0.0, handler2.getMaximalValueError(), 4.3e-8);
+        Assert.assertEquals(0, handler2.getMaximalTimeError(), 1.0e-16);
+        Assert.assertEquals("Adams-Bashforth", integ2.getName());
+
+
+        TestProblem1 pb3  = new TestProblem1();
+        double range3 = pb3.getFinalTime() - pb3.getInitialTime();
+
+        AdamsBashforthIntegrator integ3 = new AdamsBashforthIntegrator(2, 0, range3, 1.0e-12, 1.0e-12);
+        TestProblemHandler handler3 = new TestProblemHandler(pb3, integ3);
+        integ3.addStepHandler(handler3);
+        integ3.setMaxEvaluations(650);
+        integ3.integrate(pb3,
+                        pb3.getInitialTime(), pb3.getInitialState(),
+                        pb3.getFinalTime(), new double[pb3.getDimension()]);
     }
 
     @Test(expected=MathIllegalStateException.class)
