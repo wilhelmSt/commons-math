@@ -106,7 +106,9 @@ public class AdamsBashforthIntegratorTest {
     }
 
     @Test(expected = MaxCountExceededException.class)
-    public void polynomial() throws DimensionMismatchException, NumberIsTooSmallException, MaxCountExceededException, NoBracketingException {
+    public void exceedMaxEvaluationsPolynomialBackward() throws DimensionMismatchException, NumberIsTooSmallException, MaxCountExceededException, NoBracketingException {
+    	
+    	// test if it exceeds max evaluations
         TestProblem6 pb = new TestProblem6();
         double range = JdkMath.abs(pb.getFinalTime() - pb.getInitialTime());
 
@@ -125,7 +127,7 @@ public class AdamsBashforthIntegratorTest {
             }
         }
 
-
+        // test backward computation
         TestProblem5 pb2 = new TestProblem5();
         double range2 = JdkMath.abs(pb2.getFinalTime() - pb2.getInitialTime());
 
@@ -141,7 +143,7 @@ public class AdamsBashforthIntegratorTest {
         Assert.assertEquals(0, handler2.getMaximalTimeError(), 1.0e-16);
         Assert.assertEquals("Adams-Bashforth", integ2.getName());
 
-
+        // test polynomial computation
         TestProblem1 pb3  = new TestProblem1();
         double range3 = pb3.getFinalTime() - pb3.getInitialTime();
 
